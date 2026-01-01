@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Familia Castillo - 2026</title>
+    <style>
+        /* Fuente bonita */
+        @font-face {
+            font-family: 'Animales Fantastic';
+            src: url('fonts/AnimalesFantastic.ttf') format('truetype');
+        }
+        
+        body {
+            font-family: 'Animales Fantastic', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('images/fondo_principal.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            min-height: 100vh;
+            background-color: #74c6ff;
+        }
+
+        .container {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #bf0000;
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 30px 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            padding: 0 10px;
+        }
+
+        .year-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .month {
+            border-radius: 20px;
+            padding: 12px;
+            margin: 10px auto;
+            width: 95%;
+            max-width: 400px;
+            text-align: center;
+            color: #8ee700;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .month::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            border-radius: 20px;
+        }
+
+        .month h2 {
+            color: #ff3b3b;
+            margin: 0;
+            padding: 25px 0;
+            font-size: 2rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* CAMBIOS AQUÍ: Quitar el fondo blanco del calendario */
+        .calendar {
+            background: transparent; /* Cambiado de blanco a transparente */
+            border-radius: 12px;
+            padding: 8px;
+            margin-top: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .week-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+            font-size: 0.75rem;
+        }
+
+        .week-day {
+            padding: 3px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #ffffff; /* Cambiado a blanco para mejor visibilidad */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor legibilidad */
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .day {
+            padding: 5px 0;
+            background-color: transparent; /* Cambiado a transparente */
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #ffffff; /* Cambiado a blanco para mejor visibilidad */
+            text-align: center;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Sombra para mejor legibilidad */
+        }
+
+        .empty-day {
+            background-color: transparent;
+            visibility: hidden;
+        }
+
+        .birthday {
+            background-color: #FFFF00;
+            color: #cd422b !important;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #cd422b;
+            position: relative;
+            text-shadow: none; /* Sin sombra en cumpleaños */
+        }
+
+        .birthday:hover {
+            background-color: #FFD700;
+        }
+
+        .birthday::after {
+            content: '★';
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            font-size: 0.6rem;
+            color: #bf0000;
+        }
+
+        /* Fondos para cada mes */
+        #enero { background-image: url('images/cumpleaños/enero.jpg'); }
+        #febrero { background-image: url('images/cumpleaños/febrero.jpg'); }
+        #marzo { background-image: url('images/cumpleaños/marzo.jpg'); }
+        #abril { background-image: url('images/cumpleaños/abril.jpg'); }
+        #mayo { background-image: url('images/cumpleaños/mayo.jpg'); }
+        #junio { background-image: url('images/cumpleaños/junio.jpg'); }
+        #julio { background-image: url('images/cumpleaños/julio.jpg'); }
+        #agosto { background-image: url('images/cumpleaños/agosto.jpg'); }
+        #septiembre { background-image: url('images/cumpleaños/septiembre.jpg'); }
+        #octubre { background-image: url('images/cumpleaños/octubre.jpg'); }
+        #noviembre { background-image: url('images/cumpleaños/noviembre.jpg'); }
+        #diciembre { background-image: url('images/cumpleaños/diciembre.jpg'); }
+
+        /* Popup para mostrar fotos */
+        .image-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
+            flex-direction: column;
+        }
+
+        .image-popup img {
+            max-width: 95%;
+            max-height: 70%;
+            border: 5px solid white;
+            border-radius: 10px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .person-name {
+            color: white;
+            font-size: 1.3rem;
+            text-align: center;
+            padding: 10px 15px;
+            background: rgba(191, 0, 0, 0.9);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.6);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Para tablets */
+        @media (min-width: 768px) {
+            h1 { font-size: 3.5rem; margin: 50px 0 30px 0; }
+            .month { width: 85%; max-width: 500px; min-height: 220px; }
+            .month h2 { font-size: 2.5rem; padding: 35px 0; }
+            .calendar { padding: 12px; }
+        }
+
+        /* Para computadoras */
+        @media (min-width: 1024px) {
+            .year-container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                max-width: 1300px;
+                margin: 0 auto;
+            }
+            .month { min-height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Familia Castillo - 2026</h1>
+        
+        <div class="year-container">
+            <!-- Enero -->
+            <div class="month" id="enero">
+                <h2>ENERO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="enero-days"></div>
+                </div>
+            </div>
+
+            <!-- Febrero -->
+            <div class="month" id="febrero">
+                <h2>FEBRERO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="febrero-days"></div>
+                </div>
+            </div>
+
+            <!-- Marzo -->
+            <div class="month" id="marzo">
+                <h2>MARZO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="marzo-days"></div>
+                </div>
+            </div>
+
+            <!-- Abril -->
+            <div class="month" id="abril">
+                <h2>ABRIL</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="abril-days"></div>
+                </div>
+            </div>
+
+            <!-- Mayo -->
+            <div class="month" id="mayo">
+                <h2>MAYO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="mayo-days"></div>
+                </div>
+            </div>
+
+            <!-- Junio -->
+            <div class="month" id="junio">
+                <h2>JUNIO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="junio-days"></div>
+                </div>
+            </div>
+
+            <!-- Julio -->
+            <div class="month" id="julio">
+                <h2>JULIO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="julio-days"></div>
+                </div>
+            </div>
+
+            <!-- Agosto -->
+            <div class="month" id="agosto">
+                <h2>AGOSTO</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="agosto-days"></div>
+                </div>
+            </div>
+
+            <!-- Septiembre -->
+            <div class="month" id="septiembre">
+                <h2>SEPTIEMBRE</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="septiembre-days"></div>
+                </div>
+            </div>
+
+            <!-- Octubre -->
+            <div class="month" id="octubre">
+                <h2>OCTUBRE</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="octubre-days"></div>
+                </div>
+            </div>
+
+            <!-- Noviembre -->
+            <div class="month" id="noviembre">
+                <h2>NOVIEMBRE</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="noviembre-days"></div>
+                </div>
+            </div>
+
+            <!-- Diciembre -->
+            <div class="month" id="diciembre">
+                <h2>DICIEMBRE</h2>
+                <div class="calendar">
+                    <div class="week-days">
+                        <div class="week-day">L</div><div class="week-day">M</div><div class="week-day">M</div>
+                        <div class="week-day">J</div><div class="week-day">V</div><div class="week-day">S</div>
+                        <div class="week-day">D</div>
+                    </div>
+                    <div class="days" id="diciembre-days"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Música (opcional) -->
+    <audio controls autoplay loop style="display: none;">
+        <source src="musica/fondo.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // LISTA DE CUMPLEAÑOS
+        const birthdays = {
+            "1-7": "leyanet_y_steve",
+            "1-14": "yusniet_y_yusviet",
+            "1-17": "antonio",
+            "1-25": "michelagel",
+            "1-26": "helen",
+            "1-27": "neivys",
+            "2-3": "alexi",
+            "2-17": "rachel",
+            "2-18": "paulito",
+            "3-1": "reiner",
+            "3-11": "raydel",
+            "3-13": "maria",
+            "3-18": "sarvadol",
+            "3-20": "nabil",
+            "3-25": "yaine",
+            "4-4": "darling",
+            "4-10": "birulo",
+            "4-24": "elisa",
+            "4-25": "angelina",
+            "5-2": "marleny",
+            "5-7": "grabiela",
+            "5-8": "leyani",
+            "5-21": "jorge_luis",
+            "5-24": "sofia",
+            "6-9": "melizandel",
+            "6-21": "madelin",
+            "6-14": "yordany",
+            "7-18": "yakira_y_roxana",
+            "8-7": "leosbani",
+            "8-8": "joce",
+            "8-11": "angel",
+            "8-23": "toty",
+            "8-25": "mariolys",
+            "8-27": "mayte",
+            "9-5": "yaima",
+            "9-6": "suliesky",
+            "9-17": "yobani",
+            "9-27": "peje",
+            "9-30": "anita",
+            "10-1": "castillo",
+            "10-5": "nashly",
+            "10-6": "david",
+            "10-11": "neisa",
+            "10-13": "meivy_y_victo",
+            "10-19": "roberto",
+            "10-23": "daniel",
+            "11-7": "ediesky",
+            "11-9": "magalys",
+            "11-10": "marielis",
+            "11-13": "daliana",
+            "11-15": "elis",
+            "11-17": "carlito",
+            "11-21": "meghan",
+            "12-4": "beatriz",
+            "12-9": "ihosmani_y_ihasmani",
+            "12-8": "yirena",
+            "12-14": "elaine",
+            "12-24": "thiago",
+            "12-28": "jojito"
+        };
+
+        // Nombres bonitos para mostrar
+        const nombresBonitos = {
+            'leyanet_y_steve': 'Leyanet y Steve',
+            'yusniet_y_yusviet': 'Yusniet y Yusviet',
+            'antonio': 'Antonio',
+            'michelagel': 'Michelagel',
+            'helen': 'Helen',
+            'neivys': 'Neivys',
+            'alexi': 'Alexi',
+            'rachel': 'Rachel',
+            'paulito': 'Paulito',
+            'reiner': 'Reiner',
+            'raydel': 'Raydel',
+            'maria': 'María',
+            'sarvadol': 'Sarvadol',
+            'nabil': 'Nabil',
+            'yaine': 'Yaine',
+            'darling': 'Darling',
+            'birulo': 'Birulo',
+            'elisa': 'Elisa',
+            'angelina': 'Angelina',
+            'marleny': 'Marleny',
+            'grabiela': 'Grabiela',
+            'leyani': 'Leyani',
+            'jorge_luis': 'Jorge Luis',
+            'sofia': 'Sofía',
+            'melizandel': 'Melizandel',
+            'madelin': 'Madelín',
+            'yordany': 'Yordany',
+            'yakira_y_roxana': 'Yakira y Roxana',
+            'leosbani': 'Leosbani',
+            'joce': 'Joce',
+            'angel': 'Ángel',
+            'toty': 'Toty',
+            'mariolys': 'Mariolys',
+            'mayte': 'Mayte',
+            'yaima': 'Yaima',
+            'suliesky': 'Suliesky',
+            'yobani': 'Yobani',
+            'peje': 'Peje',
+            'anita': 'Anita',
+            'castillo': 'Castillo',
+            'nashly': 'Nashly',
+            'david': 'David',
+            'neisa': 'Neisa',
+            'meivy_y_victo': 'Meivy y Victor',
+            'roberto': 'Roberto',
+            'daniel': 'Daniel',
+            'ediesky': 'Ediesky',
+            'magalys': 'Magalys',
+            'marielis': 'Marielis',
+            'daliana': 'Daliana',
+            'elis': 'Elis',
+            'carlito': 'Carlito',
+            'meghan': 'Meghan',
+            'beatriz': 'Beatriz',
+            'ihosmani_y_ihasmani': 'Ihosmani y Ihasmani',
+            'yirena': 'Yirena',
+            'elaine': 'Elaine',
+            'thiago': 'Thiago',
+            'jojito': 'Jojito'
+        };
+
+        // Nombres de los meses
+        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+        // Crear calendarios
+        function crearCalendarios() {
+            for (let mes = 0; mes < 12; mes++) {
+                const mesId = meses[mes];
+                const contenedor = document.getElementById(mesId + '-days');
+                
+                if (!contenedor) continue;
+                
+                // Primer día del mes
+                const primerDia = new Date(2026, mes, 1).getDay();
+                const diasEnMes = new Date(2026, mes + 1, 0).getDate();
+                
+                // Ajustar para que empiece en Lunes
+                let ajuste = primerDia - 1;
+                if (ajuste < 0) ajuste = 6;
+                
+                // Días vacíos
+                for (let i = 0; i < ajuste; i++) {
+                    const diaVacio = document.createElement('div');
+                    diaVacio.className = 'day empty-day';
+                    contenedor.appendChild(diaVacio);
+                }
+                
+                // Crear días
+                for (let dia = 1; dia <= diasEnMes; dia++) {
+                    const diaElemento = document.createElement('div');
+                    diaElemento.className = 'day';
+                    diaElemento.textContent = dia;
+                    
+                    // Verificar si es cumpleaños
+                    const clave = (mes + 1) + '-' + dia;
+                    if (birthdays[clave]) {
+                        diaElemento.classList.add('birthday');
+                        const persona = birthdays[clave];
+                        diaElemento.onclick = function() {
+                            mostrarFoto(persona, dia, mes + 1);
+                        };
+                    }
+                    
+                    contenedor.appendChild(diaElemento);
+                }
+            }
+        }
+
+        // Mostrar foto de la persona
+        function mostrarFoto(personaKey, dia, mes) {
+            const nombreBonito = nombresBonitos[personaKey] || personaKey;
+            const fecha = dia + '/' + mes + '/2026';
+            
+            // RUTA DE LA FOTO: images/cumpleaños/[nombre].jpg
+            const rutaFoto = 'images/cumpleaños/' + personaKey + '.jpg';
+            const fotoGenerica = 'images/cumple_generico.jpg';
+            
+            crearPopup(rutaFoto, fotoGenerica, nombreBonito, fecha);
+        }
+
+        // Crear popup para mostrar foto
+        function crearPopup(rutaFoto, fotoGenerica, nombre, fecha) {
+            // Eliminar popup anterior
+            const popupAnterior = document.querySelector('.image-popup');
+            if (popupAnterior) {
+                document.body.removeChild(popupAnterior);
+            }
+            
+            const popup = document.createElement('div');
+            popup.className = 'image-popup';
+            
+            // Botón para cerrar
+            const cerrar = document.createElement('div');
+            cerrar.className = 'close-popup';
+            cerrar.innerHTML = '×';
+            cerrar.onclick = function() {
+                document.body.removeChild(popup);
+            };
+            
+            // Imagen
+            const imagen = new Image();
+            imagen.src = rutaFoto;
+            imagen.alt = 'Foto de ' + nombre;
+            imagen.onerror = function() {
+                // Si no existe la foto, usar la genérica
+                this.src = fotoGenerica;
+            };
+            
+            // Nombre y fecha
+            const info = document.createElement('div');
+            info.className = 'person-name';
+            info.innerHTML = nombre + '<br><small>' + fecha + '</small>';
+            
+            popup.appendChild(cerrar);
+            popup.appendChild(imagen);
+            popup.appendChild(info);
+            
+            // Cerrar al hacer clic fuera
+            popup.onclick = function(e) {
+                if (e.target === popup) {
+                    document.body.removeChild(popup);
+                }
+            };
+            
+            document.body.appendChild(popup);
+        }
+
+        // Cuando cargue la página
+        document.addEventListener('DOMContentLoaded', function() {
+            crearCalendarios();
+            
+            // Mensaje de bienvenida
+            setTimeout(function() {
+                alert('¡Bienvenido al Calendario Familiar 2026! 🎉\n\nHaz clic en cualquier día amarillo para ver la foto.');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
